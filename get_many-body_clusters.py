@@ -2,6 +2,7 @@
 import sys
 import os
 from collections import OrderedDict
+import argparse
 
 """
 This script processes monomers and creates CONTCAR files for various body order terms.
@@ -46,6 +47,13 @@ Author:
     Dr Fabian Berger
 
 """
+# Define command-line arguments using argparse
+def parse_args():
+    parser = argparse.ArgumentParser(description="Process monomers and create CONTCAR files for various body order terms.")
+    parser.add_argument("--body-order", type=int, default=0, help="The body order term to generate (default is 0 for full body).")
+    parser.add_argument("--contcar", default="CONTCAR", help="The name of the CONTCAR file (default is 'CONTCAR').")
+    parser.add_argument("--monomers-", default="monomers", help="The name of the monomers file (default is 'monomers').")
+    return parser.parse_args()
 
 # Function to read the contents of a file
 def read_file(filename):
@@ -229,35 +237,15 @@ def main():
     This function parses command line arguments, reads CONTCAR and monomers content,
     processes the monomers, and creates CONTCAR files for the specified body order.
     """
-    # Check command line arguments
-    if len(sys.argv) == 1:
-        body_order = 0
-        contcar_filename = "CONTCAR"
-        monomers_filename = "monomers"
-        print(f"Used files: CONTCAR and monomers, body order: full")
+    args = parse_args()
 
-    elif len(sys.argv) == 2:
-        body_order = int(sys.argv[1])
-        contcar_filename = "CONTCAR"
-        monomers_filename = "monomers"
-        print(f"Used files: CONTCAR and monomers, body order: {body_order}")
-
-    elif len(sys.argv) == 3:
-        body_order = 0
-        contcar_filename = sys.argv[1]
-        monomers_filename = sys.argv[2]
+    body_order = args.body_order
+    contcar_filename = args.contcar_file
+    monomers_filename = args.monomers_file
+    if body_order == 0:
         print(f"Used files: {contcar_filename} and {monomers_filename}, body order: full")
-
-    elif len(sys.argv) == 4:
-        body_order = int(sys.argv[1])
-        contcar_filename = sys.argv[2]
-        monomers_filename = sys.argv[3]
-        print(f"Used files: {contcar_filename} and {monomers_filename}, body order: {body_order}")
-
     else:
-        script_name = os.path.basename(sys.argv[0])
-        print(f"Usage: {script_name} [body_order CONTCAR_filename monomers_filename]")
-        return
+        print(f"Used files: {contcar_filename} and {monomers_filename}, body order: {body_order}")
 
     # Read CONTCAR and monomers content
     contcar_content = read_file(contcar_filename)
