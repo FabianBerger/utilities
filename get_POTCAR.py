@@ -259,17 +259,17 @@ def main():
     # Print messages based on the arguments
     print(f"Paw Location: {paw_location}")
     if args.paw_setting == 1:
-        print("1 : VASP recommendation for PAW potentials, (https://www.vasp.at/wiki/index.php/Available_PAW_potentials/, 01.09.2023)")
+        print("VASP recommendation for PAW potentials, (https://www.vasp.at/wiki/index.php/Available_PAW_potentials/, 01.09.2023)")
     elif args.paw_setting == 2:
-        print("2 : Hard PAW potentials or VASP recommendation if not available, (https://www.vasp.at/wiki/index.php/Available_PAW_potentials/, 01.09.2023)")
+        print("Hard PAW potentials or VASP recommendation if not available, (https://www.vasp.at/wiki/index.php/Available_PAW_potentials/, 01.09.2023)")
     elif args.paw_setting == 3:
-        print("3 : VASP recommendation for GW/RPA PAW potentials, (https://www.vasp.at/wiki/index.php/Available_PAW_potentials/, 01.09.2023)")
+        print("VASP recommendation for GW/RPA PAW potentials, (https://www.vasp.at/wiki/index.php/Available_PAW_potentials/, 01.09.2023)")
     elif args.paw_setting == 4:
-        print("4 : Hard GW/RPA PAW potentials or VASP recommendation if not available, (https://www.vasp.at/wiki/index.php/Available_PAW_potentials/, 01.09.2023)")
+        print("Hard GW/RPA PAW potentials or VASP recommendation if not available, (https://www.vasp.at/wiki/index.php/Available_PAW_potentials/, 01.09.2023)")
     elif args.paw_setting == 5:
-        print("5 : Materials Project Recommendation (https://docs.materialsproject.org/methodology/materials-methodology/calculation-details/r2scan-calculations/pseudopotentials, 01.09.2023)")
+        print("Materials Project Recommendation (https://docs.materialsproject.org/methodology/materials-methodology/calculation-details/r2scan-calculations/pseudopotentials, 01.09.2023)")
     elif args.paw_setting == 6:
-        print("6 : Minimum electron PAW potentials, (https://www.vasp.at/wiki/index.php/Available_PAW_potentials/, 01.09.2023)")
+        print("Minimum electron PAW potentials, (https://www.vasp.at/wiki/index.php/Available_PAW_potentials/, 01.09.2023)")
 
     element_dict = create_element_dict()
 
@@ -293,6 +293,8 @@ def main():
         # Rename the existing "POTCAR" file to "POTCAR_old_timestamp"
         os.rename("POTCAR", f"POTCAR_old_{timestamp}")
 
+    print(f"paw_location: {paw_location}")
+
     with open("POTCAR", "ab") as potcar_file:
         # Process each string from the 6th line
         for element in elements:
@@ -300,7 +302,6 @@ def main():
             if element in element_dict:
                 # Construct the source path using paw_location and the corresponding value in the dict
                 source_path = os.path.join(paw_location, element_dict[element][args.paw_setting - 1], "POTCAR")
-                print(f"source_path {source_path}")
                 write_POTCAR(element_dict[element][args.paw_setting - 1], source_path)
             else:
                 print(f"Element {element} is not in the dictionary.")

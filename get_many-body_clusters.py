@@ -52,7 +52,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Process monomers and create CONTCAR files for various body order terms.")
     parser.add_argument("--body-order", type=int, default=0, help="The body order term to generate (default is 0 for full body).")
     parser.add_argument("--contcar", default="CONTCAR", help="The name of the CONTCAR file (default is 'CONTCAR').")
-    parser.add_argument("--monomers-", default="monomers", help="The name of the monomers file (default is 'monomers').")
+    parser.add_argument("--monomers", default="monomers", help="The name of the monomers file (default is 'monomers').")
     return parser.parse_args()
 
 # Function to read the contents of a file
@@ -240,8 +240,8 @@ def main():
     args = parse_args()
 
     body_order = args.body_order
-    contcar_filename = args.contcar_file
-    monomers_filename = args.monomers_file
+    contcar_filename = args.contcar
+    monomers_filename = args.monomers
     if body_order == 0:
         print(f"Used files: {contcar_filename} and {monomers_filename}, body order: full")
     else:
