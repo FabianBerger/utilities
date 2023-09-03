@@ -1,9 +1,3 @@
-#!/usr/bin/env python3
-import os
-import argparse
-import shutil
-import datetime
-
 """
 get_POTCAR.py
 
@@ -32,6 +26,22 @@ Description:
     - It maps each element to the corresponding PAW potential based on the selected PAW setting.
     - The script appends the selected PAW potentials to the POTCAR file.
 
+Functions:
+    - parse_arguments():
+        Parse command-line arguments.
+    
+    - is_valid_line(line):
+        Check if a line contains only alphabetic characters and spaces.
+
+    - read_6th_line(filename):
+        Read the 6th line of a file.
+    
+    - create_element_dict():
+        Create a dictionary that maps chemical elements to PAW potentials for different settings.
+
+    - write_POTCAR(paw_pot, source_path):
+        Append a specified POTCAR file to the existing POTCAR file.
+
 Example:
     To generate a POTCAR file with VASP recommended PAW potentials, run:
     python generate_POTCAR.py --paw_setting 1 --paw_location /path/to/potpaw_directory
@@ -43,7 +53,14 @@ For more information on available PAW potentials, refer to the VASP documentatio
 
 Author:
     Dr Fabian Berger
+
 """
+
+#!/usr/bin/env python3
+import os
+import argparse
+import shutil
+import datetime
 
 def parse_arguments():
     """

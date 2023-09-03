@@ -1,3 +1,47 @@
+"""
+This script processes monomers and creates CONTCAR files for various body order terms.
+It reads the contents of a CONTCAR file and a monomers file, checks the validity of atom indices,
+and generates new CONTCAR files for different combinations of monomers based on the specified body order.
+
+Usage:
+    python script_name.py [body_order] [CONTCAR_filename] [monomers_filename]
+
+Arguments:
+    body_order (int, optional): The body order term to generate (default is 0 for full body).
+    CONTCAR_filename (str, optional): The name of the CONTCAR file (default is "CONTCAR").
+    monomers_filename (str, optional): The name of the monomers file (default is "monomers").
+
+Functions:
+    read_file(filename):
+        Read the contents of a file.
+    
+    check_atom_indices(atom_indices, total_atoms):
+        Check if atom indices are valid.
+    
+    clean_monomers_content(monomers_content):
+        Process the monomers content to create a cleaned version.
+    
+    process_monomers(contcar_content, monomers_content):
+        Process monomers data, check atom indices validity, and identify missing atoms.
+    
+    get_atomic_symbols(contcar_content, atom_indices):
+        Get atomic symbols from atom indices.
+    
+    create_monomer_contcar_file(file_name, contcar_content, monomer):
+        Create a new CONTCAR file for a monomer.
+    
+    main():
+        Main function to process monomers and create CONTCAR files.
+
+The script takes command-line arguments for specifying the body order term, CONTCAR filename, and monomers filename.
+If no arguments are provided, it uses default values. The script generates CONTCAR files for different combinations
+of monomers based on the specified body order and writes them as "POSCAR_i" files, where 'i' represents the monomer combination.
+
+Author:
+    Dr Fabian Berger
+
+"""
+
 #!/usr/bin/env python3
 import sys
 import os
