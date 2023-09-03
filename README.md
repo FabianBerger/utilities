@@ -5,8 +5,7 @@ This repository contains a collection of utility scripts for various purposes. E
 ## List of Utilities
 
 - **Create Clusters for Many Body Expansion**: `get_many-body_clusters.py` - A script to create POSCAR files (VASP file format) for many body expansions.
-
-
+- **Create VASP POTCAR files**: `get_POTCAR.py` - A script to create POTCAR files (VASP file format).
 
 ## Create Clusters for Many Body Expansion
 
@@ -25,3 +24,30 @@ To use the Monomer Processor script, run it from the command line with the follo
 ```bash
 python get_many-body_clusters.py [body_order] [CONTCAR_filename] [monomers_filename]
 ```
+
+
+
+## Generate VASP POTCAR Files
+
+The `get_POTCAR.py` script is a versatile tool designed to facilitate the generation of VASP POTCAR (Projector Augmented Wave Pseudopotential) files for use in VASP calculations. It offers flexibility by allowing users to specify PAW (PAW potentials) settings and the location of PAW potentials. The script constructs the POTCAR file based on the chemical elements present in the input POSCAR or CONTCAR file.
+
+### Features
+
+- **PAW Settings**: You can select from various PAW settings to customize the POTCAR file according to your specific calculation needs.
+
+- **User-Defined PAW Location**: Specify the directory containing PAW potentials to ensure compatibility with your local setup.
+
+- **Automatic Element Mapping**: The script automatically reads the chemical elements from the 6th line of the input POSCAR or CONTCAR file and maps them to the corresponding PAW potentials based on your chosen PAW settings.
+
+- **Appending to Existing POTCAR**: It can append selected PAW potentials to an existing POTCAR file, allowing you to maintain a comprehensive library of PAW potentials.
+
+### Usage
+
+To utilize the `get_POTCAR.py` script, follow these simple steps:
+
+1. Ensure that you have a valid input POSCAR or CONTCAR file in the current directory.
+
+2. Run the script from the command line with the desired options:
+
+```bash
+python get_POTCAR.py [--paw_setting PAW_SETTING] [--paw_location PAW_LOCATION]
