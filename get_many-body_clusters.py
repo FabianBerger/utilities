@@ -1,3 +1,8 @@
+#!/usr/bin/env python3
+import sys
+import os
+from collections import OrderedDict
+
 """
 This script processes monomers and creates CONTCAR files for various body order terms.
 It reads the contents of a CONTCAR file and a monomers file, checks the validity of atom indices,
@@ -41,11 +46,6 @@ Author:
     Dr Fabian Berger
 
 """
-
-#!/usr/bin/env python3
-import sys
-import os
-from collections import OrderedDict
 
 # Function to read the contents of a file
 def read_file(filename):

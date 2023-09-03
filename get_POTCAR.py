@@ -1,3 +1,9 @@
+#!/usr/bin/env python3
+import os
+import argparse
+import shutil
+import datetime
+
 """
 get_POTCAR.py
 
@@ -55,12 +61,6 @@ Author:
     Dr Fabian Berger
 
 """
-
-#!/usr/bin/env python3
-import os
-import argparse
-import shutil
-import datetime
 
 def parse_arguments():
     """
