@@ -13,7 +13,7 @@ Usage:
     python generate_POTCAR.py [--paw_setting PAW_SETTING] [--paw_location PAW_LOCATION]
 
 Arguments:
-    --paw_setting {1, 2, 3, 4, 5, 6}
+    --paw_setting {1, 2, 3, 4, 5, 6, 7}
         Select the PAW settings:
         1 : VASP recommendation for PAW potentials.
         2 : Hard PAW potentials or VASP recommendation if not available.
@@ -21,11 +21,12 @@ Arguments:
         4 : Hard GW/RPA PAW potentials or VASP recommendation if not available.
         5 : Materials Project Recommendation.
         6 : Minimum electron PAW potentials.
+        7 : Max(VASP recommendation - 1, Materials Project Recommendation - 5)
         (Default: 1)
 
     --paw_location PAW_LOCATION
         Path to the directory containing PAW potentials.
-        (Default: '/home/fb593/michaelides-backup/fb593/apps/vasp/vasp_PP_LIBRARY/potpaw_PBE.54/')
+        (Default: '/home/mmm1255/apps/vasp/vasp_PP_LIBRARY/potpaw_PBE.64/')
 
 Description:
     - The script reads the chemical elements from the 6th line of the input POSCAR or CONTCAR file.
@@ -73,7 +74,7 @@ def parse_arguments():
     parser.add_argument(
         "--paw_setting",
         type=int,
-        choices=[1, 2, 3, 4, 5, 6],
+        choices=[1, 2, 3, 4, 5, 6, 7],
         default=1,
         help=(
             "Select the PAW settings:\n"
@@ -82,10 +83,12 @@ def parse_arguments():
             "3 : VASP recommendation for GW/RPA PAW potentials.\n"
             "4 : Hard GW/RPA PAW potentials or VASP recommendation if not available.\n"
             "5 : Materials Project Recommendation.\n"
-            "6 : Minimum electron PAW potentials."
+            "6 : Minimum electron PAW potentials.\n"
+            "7 : Max(VASP recommendation - 1, Materials Project Recommendation - 5)"
+
         )
     )
-    parser.add_argument('--paw_location', type=str, default='/home/fb593/michaelides-backup/fb593/apps/vasp/vasp_PP_LIBRARY/potpaw_PBE.54/', help='Path to paw_location')
+    parser.add_argument('--paw_location', type=str, default='/home/mmm1255/apps/vasp/vasp_PP_LIBRARY/potpaw_PBE.64/', help='Path to paw_location')
     return parser.parse_args()
 
 
@@ -139,94 +142,96 @@ def create_element_dict():
         dict: A dictionary mapping chemical elements to lists of PAW potentials.
     """
     element_dict = {
-        #recommended DFT VASP (01.09.2023), DFT hard (if not avail, VASP rec), recommended GW/RPA VASP, GW/RPA hard (if not avail, VASP rec), redommended Materials Project, minimal
+        #recommended DFT VASP (01.09.2023), DFT hard (if not avail, VASP rec), recommended GW/RPA VASP, GW/RPA hard (if not avail, VASP rec), redommended Materials Project, minimal, max(VASP rec, Materials Project rec)
             # check if Gd, Lu in materials project is a typo (https://docs.materialsproject.org/methodology/materials-methodology/calculation-details/r2scan-calculations/pseudopotentials)
-        "H": ["H", "H_h", "H_GW", "H_h_GW", "H", "H"],
-        "He": ["He", "He", "He_GW", "He_GW", "He", "He"],
-        "Li": ["Li_sv", "Li_sv", "Li_sv_GW", "Li_sv_GW", "Li_sv", "Li"],
-        "Be": ["Be", "Be", "Be_sv_GW", "Be_sv_GW", "Be_sv", "Be"],
-        "B": ["B", "B_h", "B_GW", "B_GW", "B", "B"],
-        "C": ["C", "C_h", "C_GW", "C_h_GW", "C", "C"],
-        "N": ["N", "N_h", "N_GW", "N_h_GW", "N", "N"],
-        "O": ["O", "O_h", "O_GW", "O_h_GW", "O", "O"],
-        "F": ["F", "F_h", "F_GW", "F_h_GW", "F", "F"],
-        "Ne": ["Ne", "Ne", "Ne_GW", "Ne_GW", "Ne", "Ne"],
-        "Na": ["Na_pv", "Na_pv", "Na_sv_GW", "Na_sv_GW", "Na_pv", "Na"],
-        "Mg": ["Mg", "Mg", "Mg_sv_GW", "Mg_sv_GW", "Mg_pv", "Mg"],
-        "Al": ["Al", "Al", "Al_GW", "Al_GW", "Al", "Al"],
-        "Si": ["Si", "Si", "Si_GW", "Si_GW", "Si", "Si"],
-        "P": ["P", "P_h", "P_GW", "P_GW", "P", "P"],
-        "S": ["S", "S_h", "S_GW", "S_GW", "S", "S"],
-        "Cl": ["Cl", "Cl_h", "Cl_GW", "Cl_GW", "Cl", "Cl"],
-        "Ar": ["Ar", "Ar", "Ar_GW", "Ar_GW", "Ar", "Ar"],
-        "K": ["K_sv", "K_sv", "K_sv_GW", "K_sv_GW", "K_sv", "K_pv"],
-        "Ca": ["Ca_sv", "Ca_sv", "Ca_sv_GW", "Ca_sv_GW", "Ca_sv", "Ca_pv"],
-        "Sc": ["Sc_sv", "Sc_sv", "Sr_sv_GW", "Sr_sv_GW", "Sc_sv", "Sc"],
-        "Ti": ["Ti_sv", "Ti_sv", "Ti_sv_GW", "Ti_sv_GW", "Ti_pv", "Ti"],
-        "V": ["V_sv", "V_sv", "V_sv_GW", "V_sv_GW", "", "V"],
-        "Cr": ["Cr_pv", "Cr_pv", "Cr_sv_GW", "Cr_sv_GW", "Cr_pv", "Cr"],
-        "Mn": ["Mn_pv", "Mn_pv", "Mn_sv_GW", "Mn_sv_GW", "Mn_pv", "Mn"],
-        "Fe": ["Fe", "Fe", "Fe_sv_GW", "Fe_sv_GW", "Fe_pv", "Fe"],
-        "Co": ["Co", "Co", "Co_sv_GW", "Co_sv_GW", "Co", "Co"],
-        "Ni": ["Ni", "Ni", "Ni_sv_GW", "Ni_sv_GW", "Ni_pv", "Ni"],
-        "Cu": ["Cu", "Cu", "Cu_sv_GW", "Cu_sv_GW", "Cu_pv", "Cu"],
-        "Zn": ["Zn", "Zn", "Zn_sv_GW", "Zn_sv_GW", "Zn", "Zn"],
-        "Ga": ["Ga_d", "Ga_h", "Ga_d_GW", "Ga_d_GW", "Ga_d", "Ga"],
-        "Ge": ["Ge_d", "Ge_h", "Ge_d_GW", "Ge_d_GW", "Ge_d", "Ge"],
-        "As": ["As", "As", "As_GW", "As_GW", "As", "As"],
-        "Se": ["Se", "Se", "Se_GW", "Se_GW", "Se", "Se"],
-        "Br": ["Br", "Br", "Br_GW", "Br_GW", "Br", "Br"],
-        "Kr": ["Kr", "Kr", "Kr_GW", "Kr_GW", "Kr", "Kr"],
-        "Rb": ["Rb_sv", "Rb_sv", "Rb_sv_GW", "Rb_sv_GW", "Rb_sv", "Rb_pv"],
-        "Sr": ["Sr_sv", "Sr_sv", "Sr_sv_GW", "Sr_sv_GW", "Sr_sv", "Sr_sv"],
-        "Y": ["Y_sv", "Y_sv", "Y_sv_GW", "Y_sv_GW", "Y_sv", "Y_sv"],
-        "Zr": ["Zr_sv", "Zr_sv", "Zr_sv_GW", "Zr_sv_GW", "Zr_sv", "Zr_sv"],
-        "Nb": ["Nb_sv", "Nb_sv", "Nb_sv_GW", "Nb_sv_GW", "Nb_pv", "Nb_pv"],
-        "Mo": ["Mo_sv", "Mo_sv", "Mo_sv_GW", "Mo_sv_GW", "Mo_pv", "Mo"],
-        "Tc": ["Tc_pv", "Tc_pv", "Tc_sv_GW", "Tc_sv_GW", "Tc_pv", "Tc"],
-        "Ru": ["Ru_pv", "Ru_pv", "Ru_sv_GW", "Ru_sv_GW", "Ru_pv", "Ru"],
-        "Rh": ["Rh_pv", "Rh_pv", "Rh_sv_GW", "Rh_sv_GW", "Rh_pv", "Rh"],
-        "Pd": ["Pd", "Pd", "Pd_sv_GW", "Pd_sv_GW", "Pd", "Pd"],
-        "Ag": ["Ag", "Ag", "Ag_sv_GW", "Ag_sv_GW", "Ag", "Ag"],
-        "Cd": ["Cd", "Cd", "Cd_sv_GW", "Cd_sv_GW", "Cd", "Cd"],
-        "In": ["In_d", "In_d", "In_d_GW", "In_d_GW", "In_d", "In"],
-        "Sn": ["Sn_d", "Sn_d", "Sn_d_GW", "Sn_d_GW", "Sn_d", "Sn"],
-        "Sb": ["Sb", "Sb", "Sb_d_GW", "Sb_d_GW", "Sb", "Sb"],
-        "Te": ["Te", "Te", "Te_GW", "Te_GW", "Te", "Te"],
-        "I": ["I", "I", "I_GW", "I_GW", "I", "I"],
-        "Xe": ["Xe", "Xe", "Xe_GW", "Xe_GW", "Xe", "Xe"],
-        "Cs": ["Cs_sv", "Cs_sv", "Cs_sv_GW", "Cs_sv_GW", "Cs_sv", "Cs_sv"],
-        "Ba": ["Ba_sv", "Ba_sv", "Ba_sv_GW", "Ba_sv_GW", "Ba_sv", "Ba_sv"],
-        "La": ["La", "La", "La_GW", "La_GW", "La", "La_s"],
-        "Ce": ["Ce", "Ce_h", "Ce_GW", "Ce_GW", "Ce", "Ce_3"],
-        "Pr": ["Pr_3", "Pr_3", "", "", "Pr_3", "Pr_3"],
-        "Nd": ["Nd_3", "Nd_3", "", "", "Nd_3", "Nd_3"],
-        "Pm": ["Pm_3", "Pm_3", "", "", "Pm_3", "Pm_3"],
-        "Sm": ["Sm_3", "Sm_3", "", "", "Sm_3", "Sm_3"],
-        "Eu": ["Eu_2", "Eu_2", "", "", "Eu", "Eu_2"],
-        "Gd": ["Gd_3", "Gd_3", "", "", "Gd", "Gd_3"],
-        "Tb": ["Tb_3", "Tb_3", "", "", "Tb_3", "Tb_3"],
-        "Dy": ["Dy_3", "Dy_3", "", "", "Dy_3", "Dy_3"],
-        "Ho": ["Ho_3", "Ho_3", "", "", "Ho_3", "Ho_3"],
-        "Er": ["Er_3", "Er_3", "", "", "Er_3", "Er_2"],
-        "Tm": ["Tm_3", "Tm_3", "", "", "Tm_3", "Tm_3"],
-        "Yb": ["Yb_2", "Yb_2", "", "", "Yb_2", "Yb_2"],
-        "Lu": ["Lu_3", "Lu_3", "", "", "Lu", "Lu_3"],
-        "Hf": ["Hf_pv", "Hf_pv", "Hf_sv_GW", "Hf_sv_GW", "Hf_pv", "Hf"],
-        "Ta": ["Ta_pv", "Ta_pv", "Ta_sv_GW", "Ta_sv_GW", "Ta_pv", "Ta"],
-        "W": ["W_sv", "W_sv", "W_sv_GW", "W_sv_GW", "W_sv", "W"],
-        "Re": ["Re", "Re", "Re_sv_GW", "Re_sv_GW", "Re_pv", "Re"],
-        "Os": ["Os", "Os", "Os_sv_GW", "Os_sv_GW", "Os_pv", "Os"],
-        "Ir": ["Ir", "Ir", "Ir_sv_GW", "Ir_sv_GW", "Ir", "Ir"],
-        "Pt": ["Pt", "Pt", "Pt_sv_GW", "Pt_sv_GW", "Pt", "Pt"],
-        "Au": ["Au", "Au", "Au_sv_GW", "Au_sv_GW", "Au", "Au"],
-        "Hg": ["Hg", "Hg", "Hg_sv_GW", "Hg_sv_GW", "Hg", "Hg"],
-        "Tl": ["Tl_d", "Tl_d", "Tl_d_GW", "Tl_d_GW", "Tl_d", "Tl"],
-        "Pb": ["Pb_d", "Pb_d", "Pb_d_GW", "Pb_d_GW", "Pb_d", "Pb"],
-        "Bi": ["Bi_d", "Bi_d", "Bi_d_GW", "Bi_d_GW", "Bi", "Bi"],
-        "Po": ["Po_d", "Po_d", "Po_d_GW", "Po_d_GW", "", "Po"],
-        "At": ["At", "At", "At_d_GW", "At_d_GW", "", "At"],
-        "Rn": ["Rn", "Rn", "Rn_d_GW", "Rn_d_GW", "", "Rn"]
+        "H": ["H", "H_h", "H_GW", "H_h_GW", "H", "H", "H"],
+        "He": ["He", "He", "He_GW", "He_GW", "He", "He", "He"],
+        "Li": ["Li_sv", "Li_sv", "Li_sv_GW", "Li_sv_GW", "Li_sv", "Li", "Li_sv"],
+        "Be": ["Be", "Be", "Be_sv_GW", "Be_sv_GW", "Be_sv", "Be", "Be_sv"],
+        "B": ["B", "B_h", "B_GW", "B_GW", "B", "B", "B"],
+        "C": ["C", "C_h", "C_GW", "C_h_GW", "C", "C", "C"],
+        "N": ["N", "N_h", "N_GW", "N_h_GW", "N", "N", "N"],
+        "O": ["O", "O_h", "O_GW", "O_h_GW", "O", "O", "O"],
+        "F": ["F", "F_h", "F_GW", "F_h_GW", "F", "F", "F"],
+        "Ne": ["Ne", "Ne", "Ne_GW", "Ne_GW", "Ne", "Ne", "Ne"],
+        "Na": ["Na_pv", "Na_pv", "Na_sv_GW", "Na_sv_GW", "Na_pv", "Na", "Na_pv"],
+        "Mg": ["Mg", "Mg", "Mg_sv_GW", "Mg_sv_GW", "Mg_pv", "Mg", "Mg_pv"],
+        "Al": ["Al", "Al", "Al_GW", "Al_GW", "Al", "Al", "Al"],
+        "Si": ["Si", "Si", "Si_GW", "Si_GW", "Si", "Si", "Si"],
+        "P": ["P", "P_h", "P_GW", "P_GW", "P", "P", "P"],
+        "S": ["S", "S_h", "S_GW", "S_GW", "S", "S", "S"],
+        "Cl": ["Cl", "Cl_h", "Cl_GW", "Cl_GW", "Cl", "Cl", "Cl"],
+        "Ar": ["Ar", "Ar", "Ar_GW", "Ar_GW", "Ar", "Ar", "Ar"],
+        "K": ["K_sv", "K_sv", "K_sv_GW", "K_sv_GW", "K_sv", "K_pv", "K_sv"],
+        "Ca": ["Ca_sv", "Ca_sv", "Ca_sv_GW", "Ca_sv_GW", "Ca_sv", "Ca_pv", "Ca_sv"],
+        "Sc": ["Sc_sv", "Sc_sv", "Sr_sv_GW", "Sr_sv_GW", "Sc_sv", "Sc", "Sc_sv"],
+        "Ti": ["Ti_sv", "Ti_sv", "Ti_sv_GW", "Ti_sv_GW", "Ti_pv", "Ti", "Ti_sv"],
+        "V": ["V_sv", "V_sv", "V_sv_GW", "V_sv_GW", "", "V", "V_sv"],
+        "Cr": ["Cr_pv", "Cr_pv", "Cr_sv_GW", "Cr_sv_GW", "Cr_pv", "Cr", "Cr_pv"],
+        "Mn": ["Mn_pv", "Mn_pv", "Mn_sv_GW", "Mn_sv_GW", "Mn_pv", "Mn", "Mn_pv"],
+        "Fe": ["Fe", "Fe", "Fe_sv_GW", "Fe_sv_GW", "Fe_pv", "Fe", "Fe_pv"],
+        "Co": ["Co", "Co", "Co_sv_GW", "Co_sv_GW", "Co", "Co", "Co"],
+        "Ni": ["Ni", "Ni", "Ni_sv_GW", "Ni_sv_GW", "Ni_pv", "Ni", "Ni_pv"],
+        "Cu": ["Cu", "Cu", "Cu_sv_GW", "Cu_sv_GW", "Cu_pv", "Cu", "Cu_pv"],
+        "Cuhost": ["Cu", "Cu", "Cu_sv_GW", "Cu_sv_GW", "Cu_pv", "Cu", "Cu"],
+        "Zn": ["Zn", "Zn", "Zn_sv_GW", "Zn_sv_GW", "Zn", "Zn", "Zn"],
+        "Ga": ["Ga_d", "Ga_h", "Ga_d_GW", "Ga_d_GW", "Ga_d", "Ga", "Ga_d"],
+        "Ge": ["Ge_d", "Ge_h", "Ge_d_GW", "Ge_d_GW", "Ge_d", "Ge", "Ge_d"],
+        "As": ["As", "As", "As_GW", "As_GW", "As", "As", "As"],
+        "Se": ["Se", "Se", "Se_GW", "Se_GW", "Se", "Se", "Se"],
+        "Br": ["Br", "Br", "Br_GW", "Br_GW", "Br", "Br", "Br"],
+        "Kr": ["Kr", "Kr", "Kr_GW", "Kr_GW", "Kr", "Kr", "Kr"],
+        "Rb": ["Rb_sv", "Rb_sv", "Rb_sv_GW", "Rb_sv_GW", "Rb_sv", "Rb_pv", "Rb_sv"],
+        "Sr": ["Sr_sv", "Sr_sv", "Sr_sv_GW", "Sr_sv_GW", "Sr_sv", "Sr_sv", "Sr_sv"],
+        "Y": ["Y_sv", "Y_sv", "Y_sv_GW", "Y_sv_GW", "Y_sv", "Y_sv", "Y_sv"],
+        "Zr": ["Zr_sv", "Zr_sv", "Zr_sv_GW", "Zr_sv_GW", "Zr_sv", "Zr_sv", "Zr_sv"],
+        "Nb": ["Nb_sv", "Nb_sv", "Nb_sv_GW", "Nb_sv_GW", "Nb_pv", "Nb_pv", "Nb_sv"],
+        "Mo": ["Mo_sv", "Mo_sv", "Mo_sv_GW", "Mo_sv_GW", "Mo_pv", "Mo", "Mo_sv"],
+        "Tc": ["Tc_pv", "Tc_pv", "Tc_sv_GW", "Tc_sv_GW", "Tc_pv", "Tc", "Tc_pv"],
+        "Ru": ["Ru_pv", "Ru_pv", "Ru_sv_GW", "Ru_sv_GW", "Ru_pv", "Ru", "Ru_pv"],
+        "Rh": ["Rh_pv", "Rh_pv", "Rh_sv_GW", "Rh_sv_GW", "Rh_pv", "Rh", "Rh_pv"],
+        "Pd": ["Pd", "Pd", "Pd_sv_GW", "Pd_sv_GW", "Pd", "Pd", "Pd"],
+        "Ag": ["Ag", "Ag", "Ag_sv_GW", "Ag_sv_GW", "Ag", "Ag", "Ag"],
+        "Aghost": ["Ag", "Ag", "Ag_sv_GW", "Ag_sv_GW", "Ag", "Ag", "Ag"],
+        "Cd": ["Cd", "Cd", "Cd_sv_GW", "Cd_sv_GW", "Cd", "Cd", "Cd"],
+        "In": ["In_d", "In_d", "In_d_GW", "In_d_GW", "In_d", "In", "In_d"],
+        "Sn": ["Sn_d", "Sn_d", "Sn_d_GW", "Sn_d_GW", "Sn_d", "Sn", "Sn_d"],
+        "Sb": ["Sb", "Sb", "Sb_d_GW", "Sb_d_GW", "Sb", "Sb", "Sb"],
+        "Te": ["Te", "Te", "Te_GW", "Te_GW", "Te", "Te", "Te"],
+        "I": ["I", "I", "I_GW", "I_GW", "I", "I", "I"],
+        "Xe": ["Xe", "Xe", "Xe_GW", "Xe_GW", "Xe", "Xe", "Xe"],
+        "Cs": ["Cs_sv", "Cs_sv", "Cs_sv_GW", "Cs_sv_GW", "Cs_sv", "Cs_sv", "Cs_sv"],
+        "Ba": ["Ba_sv", "Ba_sv", "Ba_sv_GW", "Ba_sv_GW", "Ba_sv", "Ba_sv", "Ba_sv"],
+        "La": ["La", "La", "La_GW", "La_GW", "La", "La_s", "La"],
+        "Ce": ["Ce", "Ce_h", "Ce_GW", "Ce_GW", "Ce", "Ce_3", "Ce"],
+        "Pr": ["Pr_3", "Pr_3", "", "", "Pr_3", "Pr_3", "Pr_3"],
+        "Nd": ["Nd_3", "Nd_3", "", "", "Nd_3", "Nd_3", "Nd_3"],
+        "Pm": ["Pm_3", "Pm_3", "", "", "Pm_3", "Pm_3", "Pm_3"],
+        "Sm": ["Sm_3", "Sm_3", "", "", "Sm_3", "Sm_3", "Sm_3"],
+        "Eu": ["Eu_2", "Eu_2", "", "", "Eu", "Eu_2", "Eu"],
+        "Gd": ["Gd_3", "Gd_3", "", "", "Gd", "Gd_3", "Gd"],
+        "Tb": ["Tb_3", "Tb_3", "", "", "Tb_3", "Tb_3", "Tb_3"],
+        "Dy": ["Dy_3", "Dy_3", "", "", "Dy_3", "Dy_3", "Dy_3"],
+        "Ho": ["Ho_3", "Ho_3", "", "", "Ho_3", "Ho_3" "Ho_3"],
+        "Er": ["Er_3", "Er_3", "", "", "Er_3", "Er_2", "Er_3"],
+        "Tm": ["Tm_3", "Tm_3", "", "", "Tm_3", "Tm_3", "Tm_3"],
+        "Yb": ["Yb_2", "Yb_2", "", "", "Yb_2", "Yb_2", "Yb_2"],
+        "Lu": ["Lu_3", "Lu_3", "", "", "Lu", "Lu_3", "Lu"],
+        "Hf": ["Hf_pv", "Hf_pv", "Hf_sv_GW", "Hf_sv_GW", "Hf_pv", "Hf", "Hf_pv"],
+        "Ta": ["Ta_pv", "Ta_pv", "Ta_sv_GW", "Ta_sv_GW", "Ta_pv", "Ta", "Ta_pv"],
+        "W": ["W_sv", "W_sv", "W_sv_GW", "W_sv_GW", "W_sv", "W", "W_sv"],
+        "Re": ["Re", "Re", "Re_sv_GW", "Re_sv_GW", "Re_pv", "Re", "Re_pv"],
+        "Os": ["Os", "Os", "Os_sv_GW", "Os_sv_GW", "Os_pv", "Os", "Os_pv"],
+        "Ir": ["Ir", "Ir", "Ir_sv_GW", "Ir_sv_GW", "Ir", "Ir", "Ir"],
+        "Pt": ["Pt", "Pt", "Pt_sv_GW", "Pt_sv_GW", "Pt", "Pt", "Pt"],
+        "Au": ["Au", "Au", "Au_sv_GW", "Au_sv_GW", "Au", "Au", "Au"],
+        "Hg": ["Hg", "Hg", "Hg_sv_GW", "Hg_sv_GW", "Hg", "Hg", "Hg"],
+        "Tl": ["Tl_d", "Tl_d", "Tl_d_GW", "Tl_d_GW", "Tl_d", "Tl", "Tl_d"],
+        "Pb": ["Pb_d", "Pb_d", "Pb_d_GW", "Pb_d_GW", "Pb_d", "Pb", "Pb_d"],
+        "Bi": ["Bi_d", "Bi_d", "Bi_d_GW", "Bi_d_GW", "Bi", "Bi", "Bi_d"],
+        "Po": ["Po_d", "Po_d", "Po_d_GW", "Po_d_GW", "", "Po", "Po_d"],
+        "At": ["At", "At", "At_d_GW", "At_d_GW", "", "At", "At"],
+        "Rn": ["Rn", "Rn", "Rn_d_GW", "Rn_d_GW", "", "Rn", "Rn"]
     }
     return element_dict
 
@@ -270,6 +275,9 @@ def main():
         print("Materials Project Recommendation (https://docs.materialsproject.org/methodology/materials-methodology/calculation-details/r2scan-calculations/pseudopotentials, 01.09.2023)")
     elif args.paw_setting == 6:
         print("Minimum electron PAW potentials, (https://www.vasp.at/wiki/index.php/Available_PAW_potentials/, 01.09.2023)")
+    elif args.paw_setting == 7 :
+        print("Max(VASP recommendation - 1, Materials Project Recommendation - 5")
+
 
     element_dict = create_element_dict()
 
