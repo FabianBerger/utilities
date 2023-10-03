@@ -82,6 +82,26 @@ def add_carbon_monoxide(structure, unique_atom_position, distance_above):
     structure.extend(co_molecule)
     return structure
 
+def add_hydroxyl_group(structure, unique_atom_position, distance_above):
+    """
+    Add an OH group to the given atomic structure.
+
+    Args:
+        structure (ase.Atoms): The atomic structure to which the OH group will be added.
+        unique_atom_position (list): The position of the unique atom.
+        distance_above (float): The distance above the unique atom where the OH group will be added.
+
+    Returns:
+        ase.Atoms: The modified atomic structure with the added OH group.
+    """
+    oxygen_position = unique_atom_position + [0.0, 0.0, distance_above]
+    hydrogen_position = oxygen_position + [0, 0.0, 1.0]
+
+    oh_group = Atoms([Atom('O', position=oxygen_position), Atom('H', position=hydrogen_position)])
+
+    structure.extend(oh_group)
+    return structure
+
 def add_methyl_group(structure, unique_atom_position, distance_above):
     """
     Add a methyl group to the given atomic structure.
@@ -104,6 +124,31 @@ def add_methyl_group(structure, unique_atom_position, distance_above):
     ch3_group = Atoms([Atom('C', position=carbon_position)] + [Atom('H', position=p) for p in hydrogen_positions])
 
     structure.extend(ch3_group)
+    return structure
+
+def add_water_molecule(structure, unique_atom_position, distance_above, rotation_angle):
+    """
+    Add a water molecule to the given atomic structure and perform a rotation.
+
+    Args:
+        structure (ase.Atoms): The atomic structure to which the water molecule will be added.
+        unique_atom_position (list): The position of the unique atom.
+        distance_above (float): The distance above the unique atom where the water molecule will be added.
+        rotation_angle_degrees (float): The rotation angle in degrees.
+
+    Returns:
+        ase.Atoms: The modified atomic structure with the added water molecule and rotation.
+    """
+    oxygen_position = unique_atom_position + [0.0, 0.0, distance_above]
+    hydrogen1_position = oxygen_position + [-0.757, -0.586, 0]
+    hydrogen2_position = oxygen_position + [0.757, -0.586, 0]
+
+    water_molecule = Atoms('OHH', positions=[oxygen_position, hydrogen1_position, hydrogen2_position])
+    
+    # Perform the rotation of the water molecule
+    water_molecule.euler_rotate(phi=rotation_angle, theta=0.0, psi=0.0, center=oxygen_position)
+
+    structure.extend(water_molecule)
     return structure
 
 def is_direct_format(poscar_file):
@@ -156,8 +201,9 @@ def main():
     """
     parser = argparse.ArgumentParser(description="Add adsorbate to a VASP POSCAR file")
     parser.add_argument("--input_file", default="POSCAR", help="Path to the input VASP POSCAR file")
-    parser.add_argument("--adsorbate_type", help="Type of adsorbate to add (H for Hydrogen, CO for Carbon Monoxide, CH3 for Methyl group), case-insensitive")
+    parser.add_argument("--adsorbate_type", help="Type of adsorbate to add (H for Hydrogen, CO for Carbon Monoxide, CH3 for Methyl group), OH for Hydroxyl group, case-insensitive")
     parser.add_argument("--distance_above", type=float, default=1.8, help="Distance above the unique atom where the adsorbate will be added (default: 1.8 Angstroms)")
+    parser.add_argument("--yaw_angle", type=float, default=60.0, help="The yaw angle in degrees for rotating the added adsorbate around the vertical z-axis.i The default value is 60 degrees.")
 
     args = parser.parse_args()
 
@@ -169,6 +215,11 @@ def main():
          adsorbate_type_lower = 'ch3'
     if adsorbate_type_upper == 'ME':
          adsorbate_type_upper = 'CH3'
+
+    if adsorbate_type_lower == 'water':
+         adsorbate_type_lower = 'h2o'
+    if adsorbate_type_upper == 'WATER':
+         adsorbate_type_upper = 'H2O'
 
     # Check if the target file already exists
     target_file = f'POSCAR_{adsorbate_type_upper}'
@@ -194,6 +245,11 @@ def main():
         structure = add_hydrogen(structure, unique_atom_position, args.distance_above)
     elif adsorbate_type_lower == 'co':
         structure = add_carbon_monoxide(structure, unique_atom_position, args.distance_above)
+    elif adsorbate_type_lower == 'oh':
+        structure = add_hydroxyl_group(structure, unique_atom_position, args.distance_above)
+    elif adsorbate_type_lower == 'h2o':
+       rotation_angle = args.yaw_angle 
+       structure = add_water_molecule(structure, unique_atom_position, args.distance_above, rotation_angle)
     else:
         print("Invalid adsorbate choice. No modification made.")
         return
