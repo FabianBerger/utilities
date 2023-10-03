@@ -6,6 +6,9 @@ This repository contains a collection of utility scripts for various purposes. E
 
 - **Create Clusters for Many Body Expansion**: `get_many-body_clusters.py` - A script to create POSCAR files (VASP file format) for many body expansions.
 - **Create VASP POTCAR files**: `get_POTCAR.py` - A script to create POTCAR files (VASP file format).
+- **Add Adsorbates to VASP POSCAR**: `add_adsorbate.py` - A script to add adsorbates (Hydrogen, Carbon Monoxide, or Methyl groups) to VASP POSCAR files.
+
+
 
 ## Create Clusters for Many Body Expansion
 
@@ -51,3 +54,25 @@ To utilize the `get_POTCAR.py` script, follow these simple steps:
 
 ```bash
 python get_POTCAR.py [--paw_setting PAW_SETTING] [--paw_location PAW_LOCATION]
+```
+
+
+
+## Add Adsorbates to VASP POSCAR
+
+The `add_adsorbate.py` script allows you to add adsorbates (Hydrogen, Carbon Monoxide, or Methyl groups) to VASP POSCAR files. It offers the flexibility to specify the type of adsorbate and the distance above the unique atom where the adsorbate will be added.
+
+### Features
+
+- Supports three types of adsorbates: Hydrogen (H), Carbon Monoxide (CO), and Methyl groups (CH3).
+- Customizable distance above the unique atom for adsorbate placement.
+- Renames the modified structure file appropriately.
+
+### Usage
+
+To add an adsorbate to a VASP POSCAR file, run the script with the following command:
+
+```bash
+python add_adsorbate.py --input_file [POSCAR_file] --adsorbate_type [adsorbate_type] --distance_above [distance_above]
+```
+
