@@ -6,7 +6,7 @@ This repository contains a collection of utility scripts for various purposes. E
 
 - **Create Clusters for Many Body Expansion**: `get_many-body_clusters.py` - A script to create POSCAR files (VASP file format) for many body expansions.
 - **Create VASP POTCAR files**: `get_POTCAR.py` - A script to create POTCAR files (VASP file format).
-- **Add Adsorbates to Dopant Site of Single Atom Alloy Slabs (VASP POSCAR format)**: `add_adsorbate.py` - A script to add adsorbates (Hydrogen, Carbon Monoxide, or Methyl groups) to dopant site of single atom alloy slabs in VASP POSCAR format.
+- **Add Adsorbates to Dopant Site of Single Atom Alloy Slabs (VASP POSCAR format)**: `add_adsorbate.py` - A script to add adsorbates (Hydrogen, Carbon Monoxide, water, OH or CH3) to dopant site of single atom alloy slabs in VASP POSCAR format.
 
 
 
@@ -60,11 +60,11 @@ python get_POTCAR.py [--paw_setting PAW_SETTING] [--paw_location PAW_LOCATION]
 
 ## Add Adsorbates to VASP POSCAR
 
-The `add_adsorbate.py` script allows you to add adsorbates (Hydrogen, Carbon Monoxide, or Methyl groups) to the dopant atom of single atom ally slabs in VASP POSCAR format. It offers the flexibility to specify the type of adsorbate and the distance above the unique atom where the adsorbate will be added.
+The `add_adsorbate.py` script allows you to add adsorbates (Hydrogen, Carbon Monoxide, water, OH or CH3) to the dopant atom of single atom ally slabs in VASP POSCAR format. It offers the flexibility to specify the type of adsorbate and the distance above the unique atom where the adsorbate will be added.
 
 ### Features
 
-- Supports three types of adsorbates: Hydrogen (H), Carbon Monoxide (CO), and Methyl groups (CH3).
+- Supports three types of adsorbates: Hydrogen (H), Carbon Monoxide (CO), Water (H2O), Hydroxyl (OH), or Methyl groups (CH3).
 - Customizable distance above the unique atom for adsorbate placement.
 - Renames the modified structure file appropriately.
 
