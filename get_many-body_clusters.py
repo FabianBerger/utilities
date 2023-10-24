@@ -285,7 +285,30 @@ def main():
                             for l, monomer4 in enumerate(monomers[k:], start=k+1):
                                 combined_monomer = sorted(monomer1 + monomer2 + monomer3 + monomer4)
                                 create_monomer_contcar_file(f"POSCAR_{i}_{j}_{k}_{l}", contcar_content, combined_monomer)
+                                
+                                if body_order == 4 or len(monomers) == 4:
+                                    continue
 
+                                # 5. order body terms
+                                for m, monomer5 in enumerate(monomers[l:], start=l+1):
+                                    combined_monomer = sorted(monomer1 + monomer2 + monomer3 + monomer4 + monomer5)
+                                    create_monomer_contcar_file(f"POSCAR_{i}_{j}_{k}_{l}_{m}", contcar_content, combined_monomer)
+
+                                    if body_order == 5 or len(monomers) == 5:
+                                        continue
+
+                                    # 6. order body terms
+                                    for n, monomer6 in enumerate(monomers[m:], start=m+1):
+                                        combined_monomer = sorted(monomer1 + monomer2 + monomer3 + monomer4 + monomer5 + monomer6)
+                                        create_monomer_contcar_file(f"POSCAR_{i}_{j}_{k}_{l}_{m}_{n}", contcar_content, combined_monomer)
+
+                                        if body_order == 6 or len(monomers) == 6:
+                                            continue
+
+                                        # 7. order body terms
+                                        for o, monomer7 in enumerate(monomers[n:], start=n+1):
+                                            combined_monomer = sorted(monomer1 + monomer2 + monomer3 + monomer4 + monomer5 + monomer6 + monomer7)
+                                            create_monomer_contcar_file(f"POSCAR_{i}_{j}_{k}_{l}_{m}_{n}_{o}", contcar_content, combined_monomer)
 
 # Run the main function if the script is executed directly
 if __name__ == "__main__":
